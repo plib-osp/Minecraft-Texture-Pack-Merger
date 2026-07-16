@@ -52,21 +52,28 @@ export function PackUploader({ onFilesSelected, onUrlPackLoaded, disabled }: Pac
   }, [])
 
   const handleUrlLoad = useCallback(async () => {
-    const url = urlInput.trim()
-    if (!url) return
+    const urls = urlInput.split(",").map((u) => u.trim()).filter(Boolean)
+    if (urls.length === 0) return
 
     setUrlLoading(true)
     setUrlError(null)
 
-    try {
-      const pack = await loadPackFromUrl(url)
-      onUrlPackLoaded?.(pack)
-      setUrlInput("")
-    } catch (err) {
-      setUrlError(err instanceof Error ? err.message : "Failed to load pack from URL")
-    } finally {
-      setUrlLoading(false)
+    const errors: string[] = []
+    for (const url of urls) {
+      try {
+        const pack = await loadPackFromUrl(url)
+        onUrlPackLoaded?.(pack)
+      } catch (err) {
+        errors.push(`"${url}": ${err instanceof Error ? err.message : "Failed to load"}`)
+      }
     }
+
+    if (errors.length > 0) {
+      setUrlError(errors.join(" | "))
+    }
+
+    setUrlInput("")
+    setUrlLoading(false)
   }, [urlInput, onUrlPackLoaded])
 
   const handleUrlKeyDown = useCallback(
@@ -128,7 +135,7 @@ export function PackUploader({ onFilesSelected, onUrlPackLoaded, disabled }: Pac
             value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
             onKeyDown={handleUrlKeyDown}
-            placeholder="https://example.com/pack.zip"
+            placeholder="https://example.com/pack.zip, https://example.com/pack2.zip"
             disabled={disabled || urlLoading}
             className="h-10 w-full rounded-lg border bg-background pl-9 pr-3 text-sm outline-none transition-colors focus:border-primary disabled:opacity-50"
           />

@@ -1,4 +1,4 @@
-import { useRef, useState, useCallback, useEffect } from "react"
+import { useRef, useState, useCallback } from "react"
 import { PackCard } from "./pack-card"
 import { cn } from "@/lib/utils"
 import type { TexturePack } from "@/lib/types"
@@ -23,38 +23,35 @@ export function PriorityList({
   onReorder,
   onRemove,
 }: PriorityListProps) {
-  const containerRef = useRef<HTMLDivElement>(null)
   const cardRefs = useRef<(HTMLDivElement | null)[]>([])
-  const slotCenters = useRef<number[]>([])
 
   const [dragState, setDragState] = useState<DragState | null>(null)
 
-  useEffect(() => {
-    const els = cardRefs.current.map((el) =>
-      el ? el.getBoundingClientRect() : null
-    )
-    slotCenters.current = []
-    for (let i = 0; i < els.length; i++) {
-      const r = els[i]
-      if (!r) continue
-      slotCenters.current.push(r.top + r.height / 2)
-    }
-  }, [packs.length])
-
   const getTargetIndex = useCallback(
-    (clientY: number): number => {
-      const centers = slotCenters.current
-      if (centers.length === 0) return dragState?.from ?? 0
-      let closest = dragState?.from ?? 0
-      let minDist = Infinity
-      for (let i = 0; i < centers.length; i++) {
-        const dist = Math.abs(clientY - centers[i])
-        if (dist < minDist) {
-          minDist = dist
-          closest = i
+    (): number => {
+      const from = dragState?.from
+      if (from === undefined) return 0
+
+      const draggedEl = cardRefs.current[from]
+      if (!draggedEl) return from
+      const draggedRect = draggedEl.getBoundingClientRect()
+      const draggedCenter = draggedRect.top + draggedRect.height / 2
+
+      let target = from
+      for (let i = 0; i < cardRefs.current.length; i++) {
+        if (i === from) continue
+        const el = cardRefs.current[i]
+        if (!el) continue
+        const r = el.getBoundingClientRect()
+        const center = r.top + r.height / 2
+
+        if (from < i && draggedCenter >= center) {
+          target = i
+        } else if (from > i && draggedCenter <= center) {
+          target = i
         }
       }
-      return closest
+      return target
     },
     [dragState]
   )
@@ -76,7 +73,7 @@ export function PriorityList({
   const containerPointerMove = useCallback(
     (e: React.PointerEvent) => {
       if (!dragState) return
-      const to = getTargetIndex(e.clientY)
+      const to = getTargetIndex()
       if (to !== dragState.to) {
         setDragState({ ...dragState, to, currentY: e.clientY })
       } else {
@@ -121,7 +118,6 @@ export function PriorityList({
         </p>
       </div>
       <div
-        ref={containerRef}
         className="space-y-2"
         onPointerMove={containerPointerMove}
         onPointerUp={containerPointerUp}
@@ -143,7 +139,7 @@ export function PriorityList({
             <div
               key={pack.id}
               className={cn(
-                "transition-transform duration-200 ease-out",
+                dragState ? "" : "transition-transform duration-200 ease-out",
                 offset !== undefined && "pointer-events-none"
               )}
               style={

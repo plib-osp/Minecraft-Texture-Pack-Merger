@@ -45,7 +45,7 @@ export const PackCard = forwardRef<HTMLDivElement, PackCardProps>(
         )}
         style={
           isDragging && dragOffset !== undefined
-            ? { transform: `translateY(${dragOffset}px)`, transition: "transform 50ms linear" }
+            ? { transform: `translateY(${dragOffset}px)` }
             : undefined
         }
       >
