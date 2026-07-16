@@ -98,16 +98,25 @@ export function MergeResult({
     setTimeout(() => setCopied(false), 2000)
   }, [apiUrl, packs, outputMeta])
 
+  const needsMorePacks = packs.length < 2
   const isBusy = progress.phase === "merging" || progress.phase === "resolving"
   const isDone = progress.phase === "done"
 
   return (
     <div className="space-y-3">
+      {needsMorePacks && !isDone && (
+        <Alert>
+          <AlertDescription>
+            Add at least one more texture pack to enable merging.
+          </AlertDescription>
+        </Alert>
+      )}
+
       <div className="flex gap-2">
         {!isDone && (
           <Button
             onClick={handleMerge}
-            disabled={isBusy}
+            disabled={isBusy || needsMorePacks}
             className="flex-1"
             size="lg"
           >

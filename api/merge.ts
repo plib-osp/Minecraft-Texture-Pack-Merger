@@ -23,6 +23,10 @@ app.post("/", async (c) => {
       return error(c, "NO_PACKS", "At least one pack is required")
     }
 
+    if (body.packs.length < 2) {
+      return error(c, "NEED_MORE_PACKS", "At least two packs are required to perform a merge")
+    }
+
     const pluginRegistry = new PluginRegistry()
     if (body.plugins) {
       for (const plugin of body.plugins) {
