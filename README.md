@@ -2,7 +2,7 @@
   <img src="public/favicon.svg" width="64" height="64" alt="logo" />
   <h1 align="center">Minecraft Texture Pack Merger</h1>
   <p align="center">
-    Minecraft resource pack'lerini birleştirmek için web uygulaması + REST API + Plugin sistemi
+    Web application + REST API + Plugin system for merging Minecraft resource packs
   </p>
   <p>
     <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="License" /></a>
@@ -15,18 +15,18 @@
 
 ## ✨ Features
 
-- **Web App** — Tarayıcıda çalışır, dosyalar sunucuya yüklenmez. Drag-drop ile pack ekle
-- **URL ile yükleme** — Uzaktaki resource pack'lerini URL girerek doğrudan yükle
-- **REST API** — Programatik merge işlemleri için serverless API
-- **Plugin Sistemi** — Merge pipeline'ına özel işlemler ekleme (metadata düzeltme, dosya filtreleme, override)
-- **Client SDK** — TypeScript API istemcisi, kendi sitene entegre et
-- **Conflict Yönetimi** — Auto-merge veya file-by-file conflict çözümü
-- **Metadata Düzenleme** — pack_format, description, icon özelleştirme
-- **Config Export** — Merge ayarlarını JSON olarak dışa aktar
-- **cURL Desteği** — API isteklerini tek tıkla kopyala
-- **Vercel Deploy** — Tek komutla deploy edilebilir
+- **Web App** — Runs entirely in your browser. No files uploaded to any server. Drag-and-drop to add packs.
+- **URL Loading** — Load remote resource packs directly by entering their URL.
+- **REST API** — Serverless API for programmatic merge operations.
+- **Plugin System** — Extend the merge pipeline with custom logic (metadata fixes, file filtering, conflict overrides).
+- **Client SDK** — TypeScript API client for integrating merge into your own site.
+- **Conflict Management** — Auto-merge or file-by-file conflict resolution.
+- **Metadata Editing** — Customize pack_format, description, and icon.
+- **Config Export** — Export merge settings as JSON.
+- **cURL Support** — One-click copy of API request commands.
+- **Vercel Deploy** — Deploy with a single command.
 
-## 📦 Proje Yapısı
+## 📦 Project Structure
 
 ```
 minecraft-pack-merger/
@@ -39,54 +39,54 @@ minecraft-pack-merger/
 │   ├── packs.ts            # POST /api/packs
 │   ├── plugins.ts          # GET/POST /api/plugins
 │   └── _lib/               # Storage, response helpers
-├── src/                    # React web uygulaması (SPA)
-│   ├── App.tsx             # Ana uygulama
-│   ├── components/         # UI bileşenleri
+├── src/                    # React SPA
+│   ├── App.tsx             # Main application
+│   ├── components/         # UI components
 │   │   ├── pack-uploader.tsx
 │   │   ├── priority-list.tsx
 │   │   ├── conflict-table.tsx
 │   │   ├── merge-result.tsx
-│   │   └── api-docs.tsx    # API dökümantasyon sayfası
-│   └── lib/                # Yardımcılar
+│   │   └── api-docs.tsx    # API documentation page
+│   └── lib/                # Utilities
 ├── packages/
 │   ├── core/               # @pack-merge/core
 │   │   └── src/
-│   │       ├── engine/     # Merge motoru
-│   │       │   ├── loader.ts        # Pack yükleme (File, URL, Buffer)
-│   │       │   ├── validator.ts     # pack.mcmeta doğrulama
-│   │       │   ├── conflict.ts      # Conflict tespiti
-│   │       │   ├── merger.ts        # Ana merge pipeline
-│   │       │   └── metadata.ts      # Metadata manipülasyonu
-│   │       └── plugin/     # Plugin sistemi
-│   │           ├── types.ts         # MergePlugin arayüzü
+│   │       ├── engine/     # Merge engine
+│   │       │   ├── loader.ts        # Pack loading (File, URL, Buffer)
+│   │       │   ├── validator.ts     # pack.mcmeta validation
+│   │       │   ├── conflict.ts      # Conflict detection
+│   │       │   ├── merger.ts        # Merge pipeline
+│   │       │   └── metadata.ts      # Metadata manipulation
+│   │       └── plugin/     # Plugin system
+│   │           ├── types.ts         # MergePlugin interface
 │   │           └── registry.ts      # Plugin registry + hook executor
 │   └── client-sdk/         # @pack-merge/client-sdk
 │       └── src/
-│           ├── client.ts           # API istemcisi
-│           └── react/              # React hook'ları
-├── docs/                   # Dokümantasyon
-│   ├── API.md              # API referansı
-│   ├── PLUGINS.md          # Plugin geliştirme kılavuzu
-│   └── DEPLOY.md           # Deployment kılavuzu
+│           ├── client.ts           # API client
+│           └── react/              # React hooks
+├── docs/                   # Documentation
+│   ├── API.md              # API reference
+│   ├── PLUGINS.md          # Plugin development guide
+│   └── DEPLOY.md           # Deployment guide
 ├── public/
 ├── LICENSE                 # Apache 2.0
-├── vercel.json             # Vercel yapılandırması
+├── vercel.json             # Vercel configuration
 └── package.json            # npm workspaces
 ```
 
-## 🚀 Hızlı Başlangıç
+## 🚀 Quick Start
 
 ```bash
-# Bağımlılıkları yükle
+# Install dependencies
 npm install
 
-# Geliştirme sunucusunu başlat
+# Start the development server
 npm run dev
 ```
 
-Tarayıcında `http://localhost:5173` adresini aç. Resource pack'lerini sürükle-bırak veya URL girerek yükle, sırala ve birleştir.
+Open `http://localhost:5173` in your browser. Drag-and-drop or enter a URL to load resource packs, reorder them by priority, and merge.
 
-## 📡 API Kullanımı
+## 📡 API Usage
 
 ```bash
 curl -X POST https://your-app.vercel.app/api/merge \
@@ -99,27 +99,27 @@ curl -X POST https://your-app.vercel.app/api/merge \
     "priority": ["pack1", "pack2"],
     "output": {
       "name": "merged-pack",
-      "description": "Birleştirilmiş resource pack"
+      "description": "Merged resource pack"
     }
   }'
 ```
 
-Detaylı API dokümantasyonu: [docs/API.md](./docs/API.md)
+Full API reference: [docs/API.md](./docs/API.md)
 
-## 🔌 Plugin Sistemi
+## 🔌 Plugin System
 
-Plugin'ler merge pipeline'ına özel işlemler eklemenizi sağlar. Mevcut hook'lar:
+Plugins let you inject custom logic into the merge pipeline. Available hooks:
 
-| Hook | Ne Zaman | Ne Yapar |
+| Hook | When | Purpose |
 |---|---|---|
-| `onBeforeMerge` | Merge başlamadan | Pack'leri dönüştür, sırayı değiştir |
-| `onAfterMerge` | Merge tamamlanınca | Log, bildirim, analiz |
-| `onConflictDetect` | Conflict tespitinde | Override kuralları uygula |
-| `onValidate` | Pack yüklenince | Ek doğrulama |
-| `onTransformMetadata` | Metadata yazılırken | pack_format, description değiştir |
-| `onBeforeWrite` | ZIP yazılmadan | Dosya transformları |
+| `onBeforeMerge` | Before merge starts | Transform packs, reorder, add/remove files |
+| `onAfterMerge` | After merge completes | Logging, notifications, analytics |
+| `onConflictDetect` | After conflicts are found | Apply override rules |
+| `onValidate` | After a pack is loaded | Extra validation checks |
+| `onTransformMetadata` | Before metadata is written | Modify pack_format, description |
+| `onBeforeWrite` | Before ZIP is written | Final file transforms (scale, filter) |
 
-Detaylı plugin rehberi: [docs/PLUGINS.md](./docs/PLUGINS.md)
+Plugin development guide: [docs/PLUGINS.md](./docs/PLUGINS.md)
 
 ## 💻 Client SDK
 
@@ -135,13 +135,13 @@ const job = await client.merge({
   output: { name: "my-pack" }
 })
 
-// Kullanıcıya indirme linki göster
+// Show the download link to the user
 console.log(job.downloadUrl)
 ```
 
-## 📄 Lisans
+## 📄 License
 
-Bu proje **Apache License 2.0** ile lisanslanmıştır. Detaylar için [LICENSE](./LICENSE) dosyasına bakın.
+This project is licensed under the **Apache License 2.0**. See the [LICENSE](./LICENSE) file for details.
 
 ```
 Copyright 2026 pozii
