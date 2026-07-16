@@ -21,7 +21,7 @@ import { loadPackFromFile, detectConflicts, validatePack } from "@/lib/pack-merg
 import { cn } from "@/lib/utils"
 import type { TexturePack } from "@/lib/types"
 
-const API_URL = import.meta.env.VITE_API_URL || ""
+const API_URL = import.meta.env.VITE_API_URL
 
 type View = "main" | "api-docs"
 
@@ -308,7 +308,7 @@ export default function App() {
             resolutions={resolutions}
             priorityIds={prioritizedIds}
             outputMeta={outputMeta}
-            apiUrl={API_URL || undefined}
+            apiUrl={API_URL}
           />
         </>
       )}
