@@ -1,5 +1,5 @@
 import { useState, useCallback } from "react"
-import { Download, Spinner } from "@phosphor-icons/react"
+import { Download, Spinner, FileCode, Check, Code } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
 import { Alert, AlertDescription } from "@/components/ui/alert"
@@ -11,6 +11,7 @@ interface MergeResultProps {
   resolutions: Map<string, string>
   priorityIds: string[]
   outputMeta: { name: string; description: string; iconDataUrl: string | null }
+  apiUrl?: string
 }
 
 export function MergeResult({
@@ -18,6 +19,7 @@ export function MergeResult({
   resolutions,
   priorityIds,
   outputMeta,
+  apiUrl,
 }: MergeResultProps) {
   const [progress, setProgress] = useState<MergeProgress>({
     current: 0,
@@ -26,6 +28,7 @@ export function MergeResult({
   })
   const [blobUrl, setBlobUrl] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
+  const [copied, setCopied] = useState(false)
 
   const handleMerge = useCallback(async () => {
     setError(null)
@@ -46,31 +49,102 @@ export function MergeResult({
     }
   }, [packs, resolutions, priorityIds, outputMeta])
 
+  const handleExportConfig = useCallback(() => {
+    const config = {
+      packs: packs.map((p) => ({
+        name: p.name,
+        description: p.description,
+        fileCount: p.fileCount,
+      })),
+      priority: priorityIds,
+      output: {
+        name: outputMeta.name,
+        description: outputMeta.description,
+        packFormat: 22,
+      },
+      resolutions: Object.fromEntries(resolutions),
+    }
+
+    const blob = new Blob([JSON.stringify(config, null, 2)], { type: "application/json" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `${outputMeta.name || "merge-config"}.json`
+    a.click()
+    URL.revokeObjectURL(url)
+  }, [packs, priorityIds, outputMeta, resolutions])
+
+  const handleCopyCurl = useCallback(() => {
+    if (!apiUrl) return
+
+    const curlCommand = [
+      'curl -X POST ' + apiUrl + '/api/merge \\',
+      '  -H "Content-Type: application/json" \\',
+      "  -d '" + JSON.stringify({
+        packs: packs.map((p) => ({
+          type: "url",
+          url: "https://example.com/" + p.name + ".zip",
+        })),
+        priority: packs.map((_, i) => "pack" + (i + 1)),
+        output: {
+          name: outputMeta.name,
+          description: outputMeta.description,
+        },
+      }, null, 2) + "'",
+    ].join("\n")
+
+    navigator.clipboard.writeText(curlCommand)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }, [apiUrl, packs, outputMeta])
+
   const isBusy = progress.phase === "merging" || progress.phase === "resolving"
   const isDone = progress.phase === "done"
 
   return (
     <div className="space-y-3">
-      {!isDone && (
+      <div className="flex gap-2">
+        {!isDone && (
+          <Button
+            onClick={handleMerge}
+            disabled={isBusy}
+            className="flex-1"
+            size="lg"
+          >
+            {isBusy ? (
+              <>
+                <Spinner className="animate-spin" />
+                Merging...
+              </>
+            ) : (
+              <>
+                <Download />
+                Merge & Download
+              </>
+            )}
+          </Button>
+        )}
+
         <Button
-          onClick={handleMerge}
-          disabled={isBusy}
-          className="w-full"
+          onClick={handleExportConfig}
+          variant="outline"
           size="lg"
+          title="Export config as JSON"
         >
-          {isBusy ? (
-            <>
-              <Spinner className="animate-spin" />
-              Merging...
-            </>
-          ) : (
-            <>
-              <Download />
-              Merge & Download
-            </>
-          )}
+          <FileCode />
         </Button>
-      )}
+
+        {apiUrl && (
+          <Button
+            onClick={handleCopyCurl}
+            variant="outline"
+            size="lg"
+            title="Copy cURL command for API"
+          >
+            {copied ? <Check /> : <Code />}
+          </Button>
+        )}
+      </div>
 
       {isBusy && progress.total > 0 && (
         <Progress

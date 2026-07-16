@@ -3,22 +3,30 @@ import { Separator } from "@/components/ui/separator"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Switch } from "@/components/ui/switch"
+import { Button } from "@/components/ui/button"
 import {
   WarningCircle,
   Package,
   Coffee,
   Robot,
   ImageSquare,
+  BookOpen,
 } from "@phosphor-icons/react"
 import { PackUploader } from "@/components/pack-uploader"
 import { PriorityList } from "@/components/priority-list"
 import { ConflictTable } from "@/components/conflict-table"
 import { MergeResult } from "@/components/merge-result"
+import { ApiDocs } from "@/components/api-docs"
 import { loadPackFromFile, detectConflicts, validatePack } from "@/lib/pack-merger"
 import { cn } from "@/lib/utils"
 import type { TexturePack } from "@/lib/types"
 
+const API_URL = import.meta.env.VITE_API_URL || ""
+
+type View = "main" | "api-docs"
+
 export default function App() {
+  const [view, setView] = useState<View>("main")
   const [packs, setPacks] = useState<TexturePack[]>([])
   const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<string[]>([])
@@ -49,9 +57,7 @@ export default function App() {
       if (!result.valid) {
         fileErrors.push(`"${files[i].name}": ${result.error}`)
       } else if (existingNames.has(name)) {
-        fileErrors.push(
-          `"${files[i].name}" is already loaded`
-        )
+        fileErrors.push(`"${files[i].name}" is already loaded`)
       } else {
         validFiles.push(files[i])
       }
@@ -69,11 +75,7 @@ export default function App() {
 
     try {
       const loaded = await Promise.all(validFiles.map(loadPackFromFile))
-      setPacks((prev) => {
-        const merged = [...prev, ...loaded]
-        return merged
-      })
-
+      setPacks((prev) => [...prev, ...loaded])
       setResolutions(new Map())
     } catch (err) {
       setErrors((prev) => [
@@ -86,6 +88,17 @@ export default function App() {
       setLoading(false)
     }
   }, [packs])
+
+  const handleUrlPackLoaded = useCallback((pack: TexturePack) => {
+    setPacks((prev) => {
+      if (prev.some((p) => p.name === pack.name)) {
+        setErrors((prev) => [...prev, `"${pack.name}" is already loaded`])
+        return prev
+      }
+      return [...prev, pack]
+    })
+    setResolutions(new Map())
+  }, [])
 
   const handleReorder = useCallback((newPacks: TexturePack[]) => {
     setPacks(newPacks)
@@ -122,6 +135,10 @@ export default function App() {
     }
   }
 
+  if (view === "api-docs") {
+    return <ApiDocs onBack={() => setView("main")} />
+  }
+
   return (
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 p-4 py-8 sm:p-8">
       <header className="text-center">
@@ -141,6 +158,7 @@ export default function App() {
 
       <PackUploader
         onFilesSelected={handleFilesSelected}
+        onUrlPackLoaded={handleUrlPackLoaded}
         disabled={loading}
       />
 
@@ -290,11 +308,12 @@ export default function App() {
             resolutions={resolutions}
             priorityIds={prioritizedIds}
             outputMeta={outputMeta}
+            apiUrl={API_URL || undefined}
           />
         </>
       )}
 
-      <footer className="mt-auto space-y-1 text-center text-xs text-muted-foreground">
+      <footer className="mt-auto space-y-2 text-center text-xs text-muted-foreground">
         <p>
           made with{" "}
           <Coffee className="inline size-3" weight="fill" /> by{" "}
@@ -311,6 +330,15 @@ export default function App() {
           All processing is done in your browser. No files are uploaded to any
           server.
         </p>
+        <Button
+          variant="link"
+          size="sm"
+          onClick={() => setView("api-docs")}
+          className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+        >
+          <BookOpen className="size-3.5" />
+          API Documentation
+        </Button>
       </footer>
     </div>
   )
