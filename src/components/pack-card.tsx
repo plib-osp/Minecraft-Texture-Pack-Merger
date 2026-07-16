@@ -7,7 +7,7 @@ import {
 } from "@phosphor-icons/react"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { cn, parseMcColors } from "@/lib/utils"
 import type { TexturePack } from "@/lib/types"
 
 interface PackCardProps {
@@ -79,7 +79,7 @@ export const PackCard = forwardRef<HTMLDivElement, PackCardProps>(
           </div>
           {pack.description && (
             <p className="mt-0.5 truncate text-xs text-muted-foreground">
-              {pack.description}
+              {parseMcColors(pack.description)}
             </p>
           )}
           <div className="mt-0.5 flex items-center gap-3 text-xs text-muted-foreground">

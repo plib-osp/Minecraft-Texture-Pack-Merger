@@ -143,9 +143,14 @@ export default function App() {
     <div className="mx-auto flex min-h-dvh max-w-3xl flex-col gap-6 p-4 py-8 sm:p-8">
       <header className="text-center">
         <div className="mb-3 flex justify-center">
-          <div className="rounded-xl bg-muted p-3">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="rounded-xl bg-muted p-3 hover:bg-muted/80 size-auto"
+            onClick={() => window.location.href = "/"}
+          >
             <Package className="size-8" />
-          </div>
+          </Button>
         </div>
         <h1 className="text-2xl font-bold tracking-tight">
           Minecraft Texture Pack Merger
