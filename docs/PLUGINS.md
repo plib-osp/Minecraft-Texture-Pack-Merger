@@ -1,8 +1,8 @@
-# Plugin Geliştirme Kılavuzu
+# Plugin Development Guide
 
-Plugin'ler, merge pipeline'ına özel işlemler eklemenizi sağlar.
+Plugins let you inject custom logic into the merge pipeline.
 
-## Plugin Arayüzü
+## Plugin Interface
 
 ```typescript
 interface MergePlugin {
@@ -19,7 +19,7 @@ interface MergePlugin {
 }
 ```
 
-## Hook'lar ve Çalışma Sırası
+## Hooks and Execution Order
 
 ```
 VALIDATE → LOAD → DETECT CONFLICTS → RESOLVE → MERGE → WRITE ZIP
@@ -30,32 +30,32 @@ VALIDATE → LOAD → DETECT CONFLICTS → RESOLVE → MERGE → WRITE ZIP
   |                               Metadata
 ```
 
-### Hook Detayları
+### Hook Details
 
-| Hook | Tetiklendiğinde | Ne yapabilirsin |
+| Hook | Triggered When | What You Can Do |
 |---|---|---|
-| `onValidate` | Pack yüklendikten sonra | Ek doğrulama ekle, hataları/warning'leri işle |
-| `onConflictDetect` | Conflict'ler tespit edildikten sonra | Özel override kuralları uygula |
-| `onBeforeMerge` | Merge başlamadan önce | Pack'leri dönüştür, sırayı değiştir, dosya ekle/çıkar |
-| `onTransformMetadata` | Metadata oluşturulurken | pack_format, description değiştir |
-| `onBeforeWrite` | ZIP'e yazılmadan önce | Dosyaları son kez işle (scale, convert, filter) |
-| `onAfterMerge` | Merge tamamlandıktan sonra | Log tut, bildirim gönder, analiz yap |
+| `onValidate` | After a pack is loaded | Add validation, process errors/warnings |
+| `onConflictDetect` | After conflicts are detected | Apply custom override rules |
+| `onBeforeMerge` | Before merge starts | Transform packs, change order, add/remove files |
+| `onTransformMetadata` | While metadata is being built | Modify pack_format, description |
+| `onBeforeWrite` | Before writing to ZIP | Final file transforms (scale, convert, filter) |
+| `onAfterMerge` | After merge completes | Logging, notifications, analytics |
 
-## Örnek Plugin'ler
+## Example Plugins
 
-### 1. Metadata Düzeltme
+### 1. Metadata Fixer
 
 ```typescript
 const metaFixer = {
   name: "meta-fixer",
   version: "1.0.0",
-  description: "Çıktı metadata'sını otomatik düzeltir",
+  description: "Auto-fixes output metadata",
 
   onTransformMetadata: async (ctx) => ({
     ...ctx,
     metadata: {
       ...ctx.metadata,
-      description: ctx.metadata.description || "Otomatik oluşturuldu",
+      description: ctx.metadata.description || "Auto-generated",
       packFormat: Math.max(ctx.metadata.packFormat, 42),
     },
   }),
@@ -68,7 +68,7 @@ const metaFixer = {
 const textureFilter = {
   name: "texture-filter",
   version: "1.0.0",
-  description: "Sadece textures/ klasörünü dahil eder",
+  description: "Only includes the textures/ folder",
 
   onBeforeWrite: async (ctx) => ({
     ...ctx,
@@ -83,7 +83,7 @@ const textureFilter = {
 const pbrOverride = {
   name: "pbr-override",
   version: "1.0.0",
-  description: "PBR dosyalarında belirli pack'in kazanmasını sağlar",
+  description: "Ensures a specific pack wins for PBR files",
 
   onConflictDetect: async (ctx) => {
     const overrides: Record<string, string> = {}
@@ -101,9 +101,9 @@ const pbrOverride = {
 }
 ```
 
-## Plugin Kullanımı
+## Using Plugins
 
-### API ile:
+### With the API:
 
 ```json
 POST /api/merge
@@ -116,7 +116,7 @@ POST /api/merge
 }
 ```
 
-### Doğrudan Core ile:
+### Directly with Core:
 
 ```typescript
 import { PluginRegistry, mergePacks } from "@pack-merge/core"

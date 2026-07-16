@@ -1,25 +1,25 @@
 # Minecraft Texture Pack Merger
 
-Minecraft resource pack'lerini birleştirmek için **client-side** web uygulaması ve **REST API**.
+**Client-side** web application and **REST API** for merging Minecraft resource packs.
 
-## Özellikler
+## Features
 
-- **Web Uygulaması**: Tarayıcıda çalışır, dosyalar sunucuya yüklenmez
-- **REST API**: Programatik merge işlemleri için serverless API
-- **Plugin Sistemi**: Merge pipeline'ına özel işlemler ekleme
-- **Client SDK**: API'yi kullanmak için TypeScript istemci
-- **Vercel Deployment**: Tek komutla deploy
+- **Web App**: Runs in the browser, no files uploaded to servers
+- **REST API**: Serverless API for programmatic merge operations
+- **Plugin System**: Extend the merge pipeline with custom logic
+- **Client SDK**: TypeScript client for the API
+- **Vercel Deployment**: Deploy with a single command
 
-## Hızlı Başlangıç
+## Quick Start
 
-### Web Uygulaması
+### Web App
 
 ```bash
 npm install
 npm run dev
 ```
 
-### API Kullanımı
+### API Usage
 
 ```bash
 curl -X POST https://your-app.vercel.app/api/merge \
@@ -30,7 +30,7 @@ curl -X POST https://your-app.vercel.app/api/merge \
     ],
     "output": {
       "name": "merged-pack",
-      "description": "Birleştirilmiş pack"
+      "description": "Merged pack"
     }
   }'
 ```
@@ -49,30 +49,30 @@ const job = await client.merge({
   output: { name: "my-pack" }
 })
 
-// job.downloadUrl ile indir
+// Download via job.downloadUrl
 ```
 
-## Proje Yapısı
+## Project Structure
 
 ```
 minecraft-pack-merger/
 ├── api/             # Vercel Serverless Functions
-├── src/             # React web uygulaması
+├── src/             # React web application
 ├── packages/
-│   ├── core/        # Merge motoru + Plugin sistemi
-│   └── client-sdk/  # TypeScript API istemcisi
-├── docs/            # Dokümantasyon
-├── vercel.json      # Vercel yapılandırması
+│   ├── core/        # Merge engine + Plugin system
+│   └── client-sdk/  # TypeScript API client
+├── docs/            # Documentation
+├── vercel.json      # Vercel configuration
 └── package.json     # npm workspaces
 ```
 
 ## Deployment
 
 ```bash
-# Vercel'e deploy
+# Deploy to Vercel
 npx vercel --prod
 ```
 
-Detaylı deployment kılavuzu: [DEPLOY.md](./DEPLOY.md)
-API referansı: [API.md](./API.md)
-Plugin geliştirme: [PLUGINS.md](./PLUGINS.md)
+Deployment guide: [DEPLOY.md](./DEPLOY.md)
+API reference: [API.md](./API.md)
+Plugin development: [PLUGINS.md](./PLUGINS.md)

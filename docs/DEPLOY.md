@@ -1,50 +1,50 @@
-# Deployment Kılavuzu
+# Deployment Guide
 
-## Vercel'e Deploy
+## Deploy to Vercel
 
-### 1. GitHub'a Push
+### 1. Push to GitHub
 
 ```bash
 git add -A
-git commit -m "feat: api + plugin sistemi"
+git commit -m "feat: api + plugin system"
 git push origin main
 ```
 
-### 2. Vercel'de Import
+### 2. Import in Vercel
 
 1. [Vercel Dashboard](https://vercel.com) → "Add New Project"
-2. GitHub reposunu seç: `plib-osp/Minecraft-Texture-Pack-Merger`
-3. Vercel framework otomatik olarak **Vite**'ı algılayacaktır
-4. Deploy settings (genelde otomatik gelir):
+2. Select your GitHub repo: `plib-osp/Minecraft-Texture-Pack-Merger`
+3. Vercel will automatically detect **Vite**
+4. Default deploy settings:
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
    - **Install Command**: `npm install`
 
-### 3. Environment Variables (Opsiyonel)
+### 3. Environment Variables (Optional)
 
-| Variable | Açıklama |
+| Variable | Description |
 |---|---|
-| `BLOB_READ_WRITE_TOKEN` | Vercel Blob storage token (büyük pack'ler için) |
+| `BLOB_READ_WRITE_TOKEN` | Vercel Blob storage token (for large packs) |
 
 ### 4. Deploy
 
-"Deploy" butonuna tıkla. Vercel otomatik olarak:
-- SPA'yı statik dosya olarak serve eder (`src/`)
-- API fonksiyonlarını serverless olarak çalıştırır (`api/*.ts`)
+Click "Deploy". Vercel automatically:
+- Serves the SPA as static files (`src/`)
+- Runs API functions as serverless (`api/*.ts`)
 
-### 5. Custom Domain (Opsiyonel)
+### 5. Custom Domain (Optional)
 
 Vercel Dashboard > Project > Settings > Domains
 
 ---
 
-## Yerel Geliştirme
+## Local Development
 
 ```bash
-# Web uygulaması (port 5173)
+# Web app (port 5173)
 npm run dev
 
-# API'yi test etmek için
+# Test the API
 npm run dev:api
 ```
 
@@ -80,7 +80,7 @@ jobs:
 
 ---
 
-## Proje Yapısı (Vercel İçin)
+## Project Structure (for Vercel)
 
 ```
 minecraft-pack-merger/
@@ -90,9 +90,9 @@ minecraft-pack-merger/
 │   ├── packs.ts
 │   ├── plugins.ts
 │   └── ...
-├── src/              → SPA (Vite, otomatik algılanır)
+├── src/              → SPA (Vite, auto-detected)
 ├── packages/         → npm workspaces
-│   ├── core/         → @pack-merge/core (Vercel tarafından bundle edilir)
+│   ├── core/         → @pack-merge/core (bundled by Vercel)
 │   └── client-sdk/   → @pack-merge/client-sdk
 ├── public/
 ├── vercel.json
@@ -100,4 +100,4 @@ minecraft-pack-merger/
 └── vite.config.ts
 ```
 
-**Not**: npm workspaces sayesinde `packages/core` ve `packages/client-sdk` Vercel build'inde otomatik olarak çözülür.
+**Note**: npm workspaces automatically resolve `packages/core` and `packages/client-sdk` during Vercel builds.

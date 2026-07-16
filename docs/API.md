@@ -1,4 +1,4 @@
-# API Referansı
+# API Reference
 
 ## Base URL
 
@@ -8,15 +8,15 @@ https://your-app.vercel.app/api
 
 ## Authentication
 
-API anahtarı `Authorization: Bearer <key>` header'ı ile gönderilir. (Opsiyonel)
+API key is sent via `Authorization: Bearer <key>` header. (Optional)
 
 ---
 
-## Merge İşlemleri
+## Merge Operations
 
-### Merge Başlat
+### Start Merge
 
-Merge işlemini başlatır ve job ID döndürür.
+Initiates a merge job and returns the job ID.
 
 **POST** `/api/merge`
 
@@ -31,7 +31,7 @@ Merge işlemini başlatır ve job ID döndürür.
   "autoResolve": true,
   "output": {
     "name": "merged-pack",
-    "description": "Birleştirilmiş resource pack",
+    "description": "Merged resource pack",
     "packFormat": 42
   },
   "plugins": [
@@ -55,7 +55,7 @@ Merge işlemini başlatır ve job ID döndürür.
 
 ---
 
-### Merge Durumu Sorgula
+### Check Merge Status
 
 **GET** `/api/merge/:id`
 
@@ -77,17 +77,17 @@ Merge işlemini başlatır ve job ID döndürür.
 
 ---
 
-### Merge Sonucunu İndir
+### Download Merge Result
 
 **GET** `/api/merge/:id/download`
 
-304 byte'dan büyük pack'ler için **Vercel Blob** storage kullanılır, küçük pack'ler direkt response olarak döner.
+Packs larger than 304 bytes are stored via **Vercel Blob**; smaller packs are returned directly in the response.
 
 **Response:** `application/zip`
 
 ---
 
-### Merge Job Sil
+### Delete Merge Job
 
 **DELETE** `/api/merge/:id`
 
@@ -98,14 +98,14 @@ Merge işlemini başlatır ve job ID döndürür.
 
 ---
 
-### Metadata Güncelle
+### Update Metadata
 
 **PUT** `/api/merge/:id/metadata`
 
 **Request Body:**
 ```json
 {
-  "description": "Yeni açıklama",
+  "description": "Updated description",
   "packFormat": 42
 }
 ```
@@ -114,13 +114,13 @@ Merge işlemini başlatır ve job ID döndürür.
 ```json
 {
   "success": true,
-  "data": { "id": "abc123", "updated": true, "metadata": { "description": "Yeni açıklama", "packFormat": 42 } }
+  "data": { "id": "abc123", "updated": true, "metadata": { "description": "Updated description", "packFormat": 42 } }
 }
 ```
 
 ---
 
-### Conflict Çözümü Gönder
+### Submit Conflict Resolution
 
 **POST** `/api/merge/:id/resolve`
 
@@ -141,9 +141,9 @@ Merge işlemini başlatır ve job ID döndürür.
 
 ---
 
-## Pack Yönetimi
+## Pack Management
 
-### Pack Yükle (URL ile)
+### Load Pack (via URL)
 
 **POST** `/api/packs`
 
@@ -160,47 +160,47 @@ Merge işlemini başlatır ve job ID döndürür.
 }
 ```
 
-### Pack Yükle (File Upload ile)
+### Load Pack (via File Upload)
 
 **POST** `/api/packs`
 
-`multipart/form-data` ile `pack` alanında .zip dosyası gönderilir.
+Send a .zip file in the `pack` field using `multipart/form-data`.
 
 ---
 
-## Plugin Yönetimi
+## Plugin Management
 
-### Plugin'leri Listele
+### List Plugins
 
 **GET** `/api/plugins`
 
-### Plugin Ekle
+### Register Plugin
 
 **POST** `/api/plugins`
 
 ```json
-{ "name": "meta-fixer", "version": "1.0.0", "description": "Metadata düzeltme plugin'i" }
+{ "name": "meta-fixer", "version": "1.0.0", "description": "Metadata fixer plugin" }
 ```
 
 ---
 
-## Hata Kodları
+## Error Codes
 
-| HTTP | Code | Açıklama |
+| HTTP | Code | Description |
 |---|---|---|
-| 400 | `NO_PACKS` | En az bir pack gönderilmeli |
-| 400 | `INVALID_PACK` | Geçersiz pack formatı |
-| 400 | `FETCH_FAILED` | URL'den pack çekilemedi |
-| 400 | `INVALID_INPUT` | Geçersiz istek formatı |
-| 400 | `PLUGIN_EXISTS` | Plugin zaten kayıtlı |
-| 404 | `NOT_FOUND` | Job veya pack bulunamadı |
-| 500 | `MERGE_FAILED` | Merge işlemi başarısız |
-| 500 | `UPLOAD_FAILED` | Pack yükleme başarısız |
+| 400 | `NO_PACKS` | At least one pack is required |
+| 400 | `INVALID_PACK` | Invalid pack format |
+| 400 | `FETCH_FAILED` | Failed to fetch pack from URL |
+| 400 | `INVALID_INPUT` | Invalid request format |
+| 400 | `PLUGIN_EXISTS` | Plugin already registered |
+| 404 | `NOT_FOUND` | Job or pack not found |
+| 500 | `MERGE_FAILED` | Merge operation failed |
+| 500 | `UPLOAD_FAILED` | Pack upload failed |
 
-Tüm hata yanıtları:
+All error responses follow this format:
 ```json
 {
   "success": false,
-  "error": { "code": "ERROR_CODE", "message": "İnsan tarafından okunabilir hata mesajı" }
+  "error": { "code": "ERROR_CODE", "message": "Human-readable error message" }
 }
 ```
