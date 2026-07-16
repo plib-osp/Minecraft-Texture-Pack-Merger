@@ -5,8 +5,7 @@
     Web application + REST API + Plugin system for merging Minecraft resource packs
   </p>
   <p>
-    <a href="LICENSE"><img src="https://img.shields.io/badge/license-Apache%202.0-blue" alt="License" /></a>
-    <a href="https://github.com/plib-osp/Minecraft-Texture-Pack-Merger/releases"><img src="https://img.shields.io/github/v/release/plib-osp/Minecraft-Texture-Pack-Merger" alt="Release" /></a>
+    <a href="LICENSE"><img src="https://img.shields.io/github/license/plib-osp/Minecraft-Texture-Pack-Merger" alt="License" /></a>
     <a href="https://github.com/plib-osp/Minecraft-Texture-Pack-Merger"><img src="https://img.shields.io/github/stars/plib-osp/Minecraft-Texture-Pack-Merger?style=flat" alt="Stars" /></a>
   </p>
 </div>
@@ -139,26 +138,4 @@ const job = await client.merge({
 console.log(job.downloadUrl)
 ```
 
-## 📄 License
 
-This project is licensed under the **Apache License 2.0**. See the [LICENSE](./LICENSE) file for details.
-
-```
-Copyright 2026 pozii
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
-
-## 🛠 Tech Stack
-
-React 19 · TypeScript 6 · Vite 8 · Tailwind CSS 4 · Hono.js · JSZip · Vercel Serverless · shadcn/ui · Phosphor Icons
