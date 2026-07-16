@@ -14,7 +14,7 @@ import { PackUploader } from "@/components/pack-uploader"
 import { PriorityList } from "@/components/priority-list"
 import { ConflictTable } from "@/components/conflict-table"
 import { MergeResult } from "@/components/merge-result"
-import { loadPack, detectConflicts, validatePack } from "@/lib/pack-merger"
+import { loadPackFromFile, detectConflicts, validatePack } from "@/lib/pack-merger"
 import { cn } from "@/lib/utils"
 import type { TexturePack } from "@/lib/types"
 
@@ -68,7 +68,7 @@ export default function App() {
     }
 
     try {
-      const loaded = await Promise.all(validFiles.map(loadPack))
+      const loaded = await Promise.all(validFiles.map(loadPackFromFile))
       setPacks((prev) => {
         const merged = [...prev, ...loaded]
         return merged

@@ -1,32 +1,32 @@
-# React + TypeScript + Vite
+# Minecraft Texture Pack Merger
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Minecraft resource pack'lerini birleştirmek için web uygulaması + REST API + Plugin sistemi.
 
-Currently, two official plugins are available:
+- **Web App**: Tarayıcıda çalışır, dosyalar sunucuya yüklenmez
+- **REST API**: Programatik merge işlemleri
+- **Plugin Sistemi**: Genişletilebilir merge pipeline
+- **Client SDK**: TypeScript API istemcisi
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+[📖 Dokümantasyon](./docs/README.md) · [🌐 API Referansı](./docs/API.md) · [🔌 Plugin Geliştirme](./docs/PLUGINS.md) · [🚀 Deployment](./docs/DEPLOY.md)
 
-## React Compiler
+## Hızlı Başlangıç
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## API Kullanımı
+
+```bash
+curl -X POST https://your-app.vercel.app/api/merge \
+  -H "Content-Type: application/json" \
+  -d '{
+    "packs": [{ "type": "url", "url": "https://example.com/pack.zip" }],
+    "output": { "name": "merged-pack" }
+  }'
+```
+
+## Tech Stack
+
+React 19 · TypeScript 6 · Vite 8 · Tailwind CSS 4 · Hono.js · JSZip · Vercel Serverless

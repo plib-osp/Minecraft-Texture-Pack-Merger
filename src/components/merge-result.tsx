@@ -37,7 +37,7 @@ export function MergeResult({
         .map((id) => packs.find((p) => p.id === id))
         .filter((p): p is TexturePack => p !== undefined)
 
-      const blob = await mergePacks(sortedPacks, resolutions, outputMeta, setProgress)
+      const blob = await mergePacks(sortedPacks, resolutions, { ...outputMeta, packFormat: 22 }, setProgress)
       const url = URL.createObjectURL(blob)
       setBlobUrl(url)
     } catch (err) {
