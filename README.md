@@ -1,5 +1,4 @@
 <div align="center">
-  <img src="public/favicon.svg" width="64" height="64" alt="logo" />
   <h1 align="center">Minecraft Texture Pack Merger</h1>
   <p align="center">
     Web application + REST API + Plugin system for merging Minecraft resource packs
